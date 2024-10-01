@@ -1,0 +1,10 @@
+eslint.config.mjs
+.package-lock.json
+.package.json
+ts.config
+readme.md
+nodemon.json
+dist
+build
+public
+node_modules
