@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------- User Model
+model User {
+  id            String       @id @default(uuid())
+  user_code     String       @unique
+  fullname      String
+  username      String       @unique
+  email         String       @unique
+  phone         String?      @unique
+  password      String
+  profile_image String?
+  role          Role         @default(CUSTOMER)
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+  loan          Loan[]
+  Punishment    Punishment[]
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+// -----------------------------  Book Category Model
+model BookCategory {
+  id            String   @id @default(uuid())
+  category_code String   @unique
+  category_name String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  book          Book[]
+}
+
+// -----------------------------  Book Model
+model Book {
+  id               String       @id @default(uuid())
+  book_code        String       @unique
+  book_name        String
+  book_category_id String
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+  loan             Loan[]
+  category         BookCategory @relation(fields: [book_category_id], references: [id])
+}
+
+// -----------------------------  Loan Model
+model Loan {
+  id            String     @id @default(uuid())
+  loan_code     String     @unique
+  user_id       String
+  book_id       String
+  loan_date     DateTime
+  loan_duration Int
+  status        LoanStatus
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+  user          User       @relation(fields: [user_id], references: [id])
+  book          Book       @relation(fields: [book_id], references: [id])
+  Return        Return[]
+}
+
+enum LoanStatus {
+  ISSUED
+  RETURNED
+}
+
+// -----------------------------  Return Model
+model Return {
+  id          String   @id @default(uuid())
+  loan_id     String
+  return_code String   @unique
+  return_date DateTime
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  loan        Loan     @relation(fields: [loan_id], references: [id])
+}
+
+// -----------------------------  Punishment Model
+model Punishment {
+  id              String        @id @default(uuid())
+  punishment_code String        @unique
+  penalty_fee     Float
+  start_date      DateTime
+  end_date        DateTime
+  penalty_reason  String
+  penalty_status  PenaltyStatus
+  user_id         String
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  user            User          @relation(fields: [user_id], references: [id])
+}
+
+enum PenaltyStatus {
+  INCOMPLETE
+  COMPLETE
+}
