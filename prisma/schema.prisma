@@ -27,7 +27,7 @@ model User {
   created_at    DateTime     @default(now())
   updated_at    DateTime     @updatedAt
   loan          Loan[]
-  Punishment    Punishment[]
+  punishment    Punishment[]
 }
 
 enum Role {
@@ -45,16 +45,40 @@ model BookCategory {
   book          Book[]
 }
 
+// -----------------------------  Book Author Model
+model BookAuthor {
+  id          String   @id @default(uuid())
+  author_code String   @unique
+  author_name String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  book        Book[]
+}
+
+// -----------------------------  Book Publisher Model
+model BookPublisher {
+  id             String   @id @default(uuid())
+  publisher_code String   @unique
+  publisher_name String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  book           Book[]
+}
+
 // -----------------------------  Book Model
 model Book {
-  id               String       @id @default(uuid())
-  book_code        String       @unique
-  book_name        String
-  book_category_id String
-  created_at       DateTime     @default(now())
-  updated_at       DateTime     @updatedAt
-  loan             Loan[]
-  category         BookCategory @relation(fields: [book_category_id], references: [id])
+  id                String         @id @default(uuid())
+  book_code         String         @unique
+  book_name         String
+  book_category_id  String
+  book_author_id    String?
+  book_publisher_id String?
+  created_at        DateTime       @default(now())
+  updated_at        DateTime       @updatedAt
+  loan              Loan[]
+  book_publisher    BookPublisher? @relation(fields: [book_publisher_id], references: [id])
+  book_author       BookAuthor?    @relation(fields: [book_author_id], references: [id])
+  book_category     BookCategory   @relation(fields: [book_category_id], references: [id])
 }
 
 // -----------------------------  Loan Model
@@ -70,7 +94,7 @@ model Loan {
   updated_at    DateTime   @updatedAt
   user          User       @relation(fields: [user_id], references: [id])
   book          Book       @relation(fields: [book_id], references: [id])
-  Return        Return[]
+  return        Return[]
 }
 
 enum LoanStatus {
