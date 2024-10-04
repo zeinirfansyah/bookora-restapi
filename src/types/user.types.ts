@@ -3,9 +3,10 @@ export default interface IUserType {
     fullname: string,
     username: string,
     email: string,
-    phone?: string,
+    phone?: string | null,
     password: string,
-    profile_image?: string,
+    confirm_password?: string | null,
+    profile_image?: string | null,
     role: 'CUSTOMER' | 'ADMIN',
     created_at: Date,
     updated_at: Date
