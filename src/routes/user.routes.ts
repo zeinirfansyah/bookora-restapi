@@ -1,9 +1,9 @@
-import { type Request, type Response, Router } from 'express'
+import { createUser } from '../controllers/user.controller'
+import { Router } from 'express'
+import { validateUserInput } from '../middlewares/validators/user.validator'
 
 const userRouter = Router()
 
-userRouter.get('/user', (req: Request, res: Response) => {
-    res.status(200).json({ message: 'User route working!' })
-})
+userRouter.post('/user', validateUserInput, createUser)
 
 export default userRouter
