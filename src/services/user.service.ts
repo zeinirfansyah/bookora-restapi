@@ -1,4 +1,4 @@
-import { createUserRepository, updateUserRepository } from "../repositories/user.repository";
+import { createUserRepository, getUserRepository, updateUserRepository } from "../repositories/user.repository";
 import IUserType from "../types/user.types";
 import bcrypt from 'bcryptjs'
 
@@ -25,4 +25,13 @@ export const updateUserService = async (user_code: string, payload: Partial<IUse
     }
 
     return await updateUserRepository(user_code, payload)
+}
+
+export const getUserService = async (user_code: string): Promise<IUserType | null> => {
+
+    if (!user_code) {
+        return null
+    }
+
+    return await getUserRepository(user_code)
 }

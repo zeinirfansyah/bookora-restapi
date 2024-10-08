@@ -29,3 +29,11 @@ export const updateUserRepository = async (user_code: string, payload: Partial<I
         profile_image: updatedUser.profile_image || null
     }
 }
+
+export const getUserRepository = async (user_code: string): Promise<IUserType | null> => {
+    const user = await prisma.user.findUnique({
+        where: { user_code }
+    })
+
+    return user
+}

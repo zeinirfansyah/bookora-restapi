@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUserService, updateUserService } from "../services/user.service";
+import { createUserService, getUserService, updateUserService } from "../services/user.service";
 import { UploadedFile } from "express-fileupload";
 import { uploadFile } from "../helpers/upload";
 import path from "path";
@@ -116,6 +116,37 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
             data: updatedUser
         });
 
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            status: 500,
+            message: 'Something went wrong',
+            error: error
+        });
+    }
+}
+
+export const getUser = async (req: Request, res: Response): Promise<void> => {
+    const { user_code } = req.params;
+
+    try {
+        const user = await getUserService(user_code);
+
+        if (!user) {
+            res.status(404).json({
+                success: false,
+                status: 404,
+                message: 'User not found'
+            });
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            status: 200,
+            message: 'User fetched successfully',
+            data: user
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
