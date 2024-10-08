@@ -5,6 +5,6 @@ import { validateUserInput } from '../middlewares/validators/user.validator'
 const userRouter = Router()
 
 userRouter.post('/user', validateUserInput, createUser)
-userRouter.patch('/user/:user_code', updateUser)
+userRouter.patch('/user/:user_code', validateUserInput, updateUser)
 
 export default userRouter
