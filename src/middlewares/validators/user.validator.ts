@@ -5,6 +5,7 @@ import prisma from '../../config/prisma'
 
 export const validateUserInput = async (req: Request, res: Response, next: NextFunction) => {
     const userData = req.body
+    const userCode = req.params?.user_code
 
     const isPatchMethod = req.method === 'PATCH'
 
@@ -129,7 +130,18 @@ export const validateUserInput = async (req: Request, res: Response, next: NextF
         return
     }
 
-    if (userData.username) {
+
+    let user = null
+    if (userCode) {
+        user = await prisma.user.findUnique({
+            where: {
+                user_code: userCode
+            }
+        })
+    }
+
+
+    if (userData.username && user?.username !== userData.username) {
         const existingUser = await prisma.user.findUnique({
             where: {
                 username: userData.username
@@ -146,7 +158,7 @@ export const validateUserInput = async (req: Request, res: Response, next: NextF
         }
     }
 
-    if (userData.email) {
+    if (userData.email && user?.email !== userData.email) {
         const existingUser = await prisma.user.findUnique({
             where: {
                 email: userData.email
@@ -163,7 +175,7 @@ export const validateUserInput = async (req: Request, res: Response, next: NextF
         }
     }
 
-    if (userData.phone) {
+    if (userData.phone && user?.phone !== userData.phone) {
         const existingUser = await prisma.user.findUnique({
             where: {
                 phone: userData.phone
