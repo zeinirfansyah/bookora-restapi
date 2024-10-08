@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { createUserService, updateUserService } from "../services/user.service";
 import { UploadedFile } from "express-fileupload";
 import { uploadFile } from "../helpers/upload";
+import path from "path";
+import prisma from "../config/prisma";
+import fs from 'fs'
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
     const {
@@ -28,7 +31,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
                 allowedExtensions
             );
         }
-        // Panggil service untuk membuat user
+
         const newUser = await createUserService({
             user_code: `USR_${new Date().getTime()}`,
             fullname,
@@ -64,6 +67,14 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     const profile_image = req.files?.profile_image as UploadedFile
 
     try {
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                user_code
+            }
+        })
+
+        console.log(existingUser)
+
         let uploadedProfileImagePath: string | null = null;
 
         if (profile_image && !Array.isArray(profile_image)) {
@@ -75,9 +86,17 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
                 destinationPath,
                 allowedExtensions
             );
+
+            const existingProfileImage = path.join(
+                __dirname,
+                `../../${existingUser?.profile_image}`
+            )
+
+            if (fs.existsSync(existingProfileImage)) {
+                fs.unlinkSync(existingProfileImage)
+            }
         }
 
-        // Prepare payload for the user update
         const payload = {
             fullname,
             username,
