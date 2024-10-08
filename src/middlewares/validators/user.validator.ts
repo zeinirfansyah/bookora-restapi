@@ -138,8 +138,16 @@ export const validateUserInput = async (req: Request, res: Response, next: NextF
                 user_code: userCode
             }
         })
-    }
 
+        if (!user) {
+            res.status(404).send({
+                status_code: 404,
+                success: false,
+                message: 'User not found'
+            })
+            return
+        }
+    }
 
     if (userData.username && user?.username !== userData.username) {
         const existingUser = await prisma.user.findUnique({
