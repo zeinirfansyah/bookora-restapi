@@ -1,4 +1,4 @@
-import { createUserRepository } from "../repositories/user.repository";
+import { createUserRepository, updateUserRepository } from "../repositories/user.repository";
 import IUserType from "../types/user.types";
 import bcrypt from 'bcryptjs'
 
@@ -17,4 +17,12 @@ export const createUserService = async (payload: Omit<IUserType, 'created_at' | 
             ...userData
         }
     )
+}
+
+export const updateUserService = async (user_code: string, payload: Partial<IUserType>): Promise<IUserType> => {
+    if (payload.password) {
+        payload.password = await bcrypt.hash(payload.password, 10)
+    }
+
+    return await updateUserRepository(user_code, payload)
 }
