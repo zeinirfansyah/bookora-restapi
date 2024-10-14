@@ -3,7 +3,6 @@ import { createUserService, getUserService, updateUserService } from "../service
 import { UploadedFile } from "express-fileupload";
 import { uploadFile } from "../helpers/upload";
 import path from "path";
-import prisma from "../config/prisma";
 import fs from 'fs'
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
@@ -67,11 +66,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     const profile_image = req.files?.profile_image as UploadedFile
 
     try {
-        const existingUser = await prisma.user.findUnique({
-            where: {
-                user_code
-            }
-        })
+        const existingUser = await getUserService(user_code);
 
         console.log(existingUser)
 
