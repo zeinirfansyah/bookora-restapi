@@ -68,9 +68,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     try {
         const existingUser = await getUserService(user_code);
 
-        console.log(existingUser)
-
-        let uploadedProfileImagePath: string | null = null;
+        let uploadedProfileImagePath: string | null = existingUser?.profile_image || null;
 
         if (profile_image && !Array.isArray(profile_image)) {
             const allowedExtensions = [".png", ".jpg", ".jpeg"];
