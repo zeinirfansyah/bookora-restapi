@@ -1,4 +1,5 @@
-import { createUserRepository, getUserRepository, updateUserRepository } from "../repositories/user.repository";
+import { Role } from "@prisma/client";
+import { createUserRepository, getAllUsersRepository, getUserRepository, updateUserRepository } from "../repositories/user.repository";
 import IUserType from "../types/user.types";
 import bcrypt from 'bcryptjs'
 
@@ -34,4 +35,8 @@ export const getUserService = async (user_code: string): Promise<IUserType | nul
     }
 
     return await getUserRepository(user_code)
+}
+
+export const getAllUsersService = async (role: Role): Promise<IUserType[] | null> => {
+    return await getAllUsersRepository(role)
 }

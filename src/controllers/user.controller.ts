@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { createUserService, getUserService, updateUserService } from "../services/user.service";
+import { createUserService, getAllUsersService, getUserService, updateUserService } from "../services/user.service";
 import { UploadedFile } from "express-fileupload";
 import { uploadFile } from "../helpers/upload";
 import path from "path";
 import fs from 'fs'
+import { Role } from "@prisma/client";
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
     const {
@@ -140,6 +141,47 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
             message: 'User fetched successfully',
             data: user
         });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            status: 500,
+            message: 'Something went wrong',
+            error: error
+        });
+    }
+}
+
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+    const { role } = req.query
+
+    try {
+        if (role && !(role === 'CUSTOMER' || role === 'ADMIN')) {
+            res.status(400).json({
+                success: false,
+                status: 400,
+                message: 'Invalid user role.',
+            })
+            return
+        }
+
+        const users = await getAllUsersService(role as Role)
+
+        if (!users || users.length === 0) {
+            res.status(400).json({
+                success: false,
+                status: 400,
+                message: 'User not found.',
+                data: users
+            })
+            return
+        }
+
+        res.status(200).json({
+            success: true,
+            status: 200,
+            message: 'User fetched successfully',
+            data: users
+        })
     } catch (error) {
         res.status(500).json({
             success: false,

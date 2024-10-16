@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import prisma from "../config/prisma";
 import IUserType from "../types/user.types";
 
@@ -36,4 +37,10 @@ export const getUserRepository = async (user_code: string): Promise<IUserType | 
     })
 
     return user
+}
+
+export const getAllUsersRepository = async (role: Role): Promise<IUserType[] | null> => {
+    return await prisma.user.findMany({
+        where: { role }
+    });
 }
