@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUserService, deleteUserService, getAllUsersService, getUserService, updateUserService } from "../services/user.service";
+import { createUserService, deleteAllUsersService, deleteUserService, getAllUsersService, getUserService, updateUserService } from "../services/user.service";
 import { UploadedFile } from "express-fileupload";
 import { uploadFile } from "../helpers/upload";
 import path from "path";
@@ -230,6 +230,68 @@ export const deleteUser = async (req: Request, res: Response) => {
             success: true,
             status: 200,
             message: `User with user code ${user_code} deleted successfully.`,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            status: 500,
+            message: 'Something went wrong',
+            error: error
+        });
+    }
+}
+
+export const deleteUsers = async (req: Request, res: Response) => {
+    const { role } = req.query
+    try {
+
+        if (role && !(role === 'CUSTOMER' || role === 'ADMIN')) {
+            res.status(400).json({
+                success: false,
+                status: 400,
+                message: 'Invalid user role.',
+            })
+            return
+        }
+
+        const users = await getAllUsersService(role as Role)
+
+        console.log(`Users: ${users}`)
+
+        if (!users || users.length === 0) {
+            res.status(400).json({
+                success: false,
+                status: 400,
+                message: 'Users not found.',
+            });
+            return
+        }
+
+        for (const user of users) {
+            if (user?.profile_image) {
+                const profile_image_path = path.join(__dirname, `../../${user.profile_image}`);
+
+                try {
+                    fs.unlinkSync(profile_image_path);
+                } catch (error) {
+                    res.status(500).json({
+                        success: false,
+                        status: 500,
+                        message: 'Error deleting profile_image.',
+                        error: error
+                    });
+                    return
+                }
+            }
+        }
+
+        await deleteAllUsersService(role as Role)
+
+        res.status(200).json({
+            success: true,
+            status: 200,
+            message: `All users deleted successfully.`,
         });
 
     } catch (error) {

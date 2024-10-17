@@ -50,3 +50,9 @@ export const deleteUserRepository = async (user_code: string) => {
         where: { user_code }
     })
 }
+
+export const deleteAllUsersRepository = async (role: Role) => {
+    return await prisma.user.deleteMany({
+        where: { role }
+    })
+}
