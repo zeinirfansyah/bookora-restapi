@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUserService, getAllUsersService, getUserService, updateUserService } from "../services/user.service";
+import { createUserService, deleteUserService, getAllUsersService, getUserService, updateUserService } from "../services/user.service";
 import { UploadedFile } from "express-fileupload";
 import { uploadFile } from "../helpers/upload";
 import path from "path";
@@ -182,6 +182,40 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
             message: 'User fetched successfully',
             data: users
         })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            status: 500,
+            message: 'Something went wrong',
+            error: error
+        });
+    }
+}
+
+export const deleteUser = async (req: Request, res: Response) => {
+    const { user_code } = req.params
+
+    try {
+
+        const user = await getUserService(user_code)
+
+        if (!user) {
+            res.status(400).json({
+                success: false,
+                status: 400,
+                message: 'User not found.',
+            });
+        }
+
+        await deleteUserService(user_code)
+
+        res.status(200).json({
+            success: true,
+            status: 200,
+            message: `User with user code ${user_code} deleted successfully.`,
+        });
+
+
     } catch (error) {
         res.status(500).json({
             success: false,
