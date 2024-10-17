@@ -205,6 +205,23 @@ export const deleteUser = async (req: Request, res: Response) => {
                 status: 400,
                 message: 'User not found.',
             });
+            return
+        }
+
+        if (user?.profile_image) {
+            const profile_image_path = path.join(__dirname, `../../${user.profile_image}`)
+
+            try {
+                fs.unlinkSync(profile_image_path);
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    status: 500,
+                    message: 'Error deleting profile_image.',
+                    error: error
+                });
+                return
+            }
         }
 
         await deleteUserService(user_code)
@@ -214,7 +231,6 @@ export const deleteUser = async (req: Request, res: Response) => {
             status: 200,
             message: `User with user code ${user_code} deleted successfully.`,
         });
-
 
     } catch (error) {
         res.status(500).json({
