@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 import prisma from "../config/prisma";
 import IUserType from "../types/user.types";
 
@@ -31,17 +31,17 @@ export const updateUserRepository = async (user_code: string, payload: Partial<I
     }
 }
 
-export const getUserRepository = async (user_code: string): Promise<IUserType | null> => {
+export const getUserRepository = async (payload: Prisma.UserWhereUniqueInput): Promise<IUserType | null> => {
     const user = await prisma.user.findUnique({
-        where: { user_code }
+        where: payload
     })
 
     return user
 }
 
-export const getAllUsersRepository = async (role: Role): Promise<IUserType[] | null> => {
+export const getAllUsersRepository = async (payload?: Prisma.UserWhereInput): Promise<IUserType[] | null> => {
     return await prisma.user.findMany({
-        where: { role }
+        where: payload
     });
 }
 

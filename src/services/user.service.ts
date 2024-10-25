@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 import { createUserRepository, deleteAllUsersRepository, deleteUserRepository, getAllUsersRepository, getUserRepository, updateUserRepository } from "../repositories/user.repository";
 import IUserType from "../types/user.types";
 import bcrypt from 'bcryptjs'
@@ -28,17 +28,17 @@ export const updateUserService = async (user_code: string, payload: Partial<IUse
     return await updateUserRepository(user_code, payload)
 }
 
-export const getUserService = async (user_code: string): Promise<IUserType | null> => {
+export const getUserService = async (payload: Prisma.UserWhereUniqueInput): Promise<IUserType | null> => {
 
-    if (!user_code) {
+    if (!payload) {
         return null
     }
 
-    return await getUserRepository(user_code)
+    return await getUserRepository(payload)
 }
 
-export const getAllUsersService = async (role: Role): Promise<IUserType[] | null> => {
-    return await getAllUsersRepository(role)
+export const getAllUsersService = async (payload?: Prisma.UserWhereInput): Promise<IUserType[] | null> => {
+    return await getAllUsersRepository(payload)
 }
 
 export const deleteUserService = async (user_code: string) => {
