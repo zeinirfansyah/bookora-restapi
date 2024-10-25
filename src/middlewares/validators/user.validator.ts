@@ -88,7 +88,18 @@ export const validateUserInput = async (req: Request, res: Response, next: NextF
     }
 
     if (userData.password) {
+
+        if (!userData.confirm_password) {
+            res.status(400).send({
+                status_code: 400,
+                success: false,
+                message: 'Confirm password is required'
+            })
+            return
+        }
+
         const trimPassword = userData.password.trim()
+        const trimConfirmPassword = userData.confirm_password.trim()
 
         if (
             !isStrongPassword(trimPassword, {
@@ -109,7 +120,7 @@ export const validateUserInput = async (req: Request, res: Response, next: NextF
             return
         }
 
-        const trimConfirmPassword = userData.confirm_password.trim()
+
         if (trimPassword !== trimConfirmPassword) {
             res.status(400).send({
                 status_code: 400,
