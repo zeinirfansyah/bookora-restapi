@@ -17,7 +17,32 @@ export const createBookRepository = async (payload: IBookType): Promise<IBookTyp
 
 export const getAllBooksRepository = async (payload?: Prisma.BookWhereInput): Promise<IBookType[] | null> => {
     return await prisma.book.findMany({
-        where: payload
+        where: payload,
+        omit: {
+            book_category_id: true,
+            book_author_id: true,
+            book_publisher_id: true,
+        },
+        include: {
+            book_author: {
+                omit: {
+                    created_at: true,
+                    updated_at: true
+                }
+            },
+            book_category: {
+                omit: {
+                    created_at: true,
+                    updated_at: true
+                }
+            },
+            book_publisher: {
+                omit: {
+                    created_at: true,
+                    updated_at: true
+                }
+            },
+        }
     });
 }
 
