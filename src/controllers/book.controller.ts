@@ -5,6 +5,7 @@ import { UploadedFile } from "express-fileupload";
 import { uploadFile } from "../helpers/upload";
 import { getBookPublisherService } from "../services/book_publisher.service";
 import { getBookAuthorRepository } from "../repositories/book_author.repository";
+import path from "path";
 
 export const createBook = async (req: Request, res: Response): Promise<void> => {
     const {
@@ -18,6 +19,7 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
 
     try {
         let uploadedBookCover: string | null = null;
+        let bookCoverPath: string | null = null;
 
         if (book_cover && !Array.isArray(book_cover)) {
             const allowedExtensions = [".png", ".jpg", ".jpeg"];
@@ -28,7 +30,10 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
                 destinationPath,
                 allowedExtensions
             );
+
+            bookCoverPath = `/uploads/book_covers/${path.basename(uploadedBookCover)}`
         }
+
 
         let book_category_id
         let book_publisher_id
@@ -86,7 +91,7 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
             book_category_id,
             book_publisher_id,
             book_author_id,
-            book_cover: uploadedBookCover
+            book_cover: bookCoverPath
         });
 
         res.status(201).json({
