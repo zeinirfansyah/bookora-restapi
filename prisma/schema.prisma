@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -59,7 +60,7 @@ model BookAuthor {
 model BookPublisher {
   id             String   @id @default(uuid())
   publisher_code String   @unique
-  publisher_name String   @unique
+  publisher_name String
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
   book           Book[]
@@ -84,18 +85,18 @@ model Book {
 
 // -----------------------------  Loan Model
 model Loan {
-  id            String     @id @default(uuid())
-  loan_code     String     @unique
+  id            String       @id @default(uuid())
+  loan_code     String       @unique
   user_id       String
   book_id       String
   loan_date     DateTime
   loan_duration Int
   status        LoanStatus
-  created_at    DateTime   @default(now())
-  updated_at    DateTime   @updatedAt
-  user          User       @relation(fields: [user_id], references: [id])
-  book          Book       @relation(fields: [book_id], references: [id])
-  return        Return[]
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+  user          User         @relation(fields: [user_id], references: [id])
+  book          Book         @relation(fields: [book_id], references: [id])
+  book_return   BookReturn[]
 }
 
 enum LoanStatus {
@@ -103,8 +104,8 @@ enum LoanStatus {
   RETURNED
 }
 
-// -----------------------------  Return Model
-model Return {
+// -----------------------------  BookReturn Model
+model BookReturn {
   id          String   @id @default(uuid())
   loan_id     String
   return_code String   @unique
