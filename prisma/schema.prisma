@@ -6,7 +6,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["omitApi"]
+  previewFeatures = ["omitApi", "fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -81,6 +81,8 @@ model Book {
   book_publisher    BookPublisher? @relation(fields: [book_publisher_id], references: [id])
   book_author       BookAuthor?    @relation(fields: [book_author_id], references: [id])
   book_category     BookCategory?  @relation(fields: [book_category_id], references: [id])
+
+  @@fulltext([book_name])
 }
 
 // -----------------------------  Loan Model
