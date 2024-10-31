@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import { createBookRepository, getAllBooksRepository } from "../repositories/book.repository";
 import IBookType from "../types/book.types";
 
@@ -16,6 +15,11 @@ export const createBookService = async (payload: Omit<IBookType, 'created_at' | 
     )
 }
 
-export const getAllBooksService = async (payload?: Prisma.BookWhereInput): Promise<IBookType[] | null> => {
-    return await getAllBooksRepository(payload)
+export const getAllBooksService = async (
+    book_name?: string,
+    category_code?: string,
+    author_code?: string,
+    publisher_code?: string
+): Promise<IBookType[] | null> => {
+    return await getAllBooksRepository(book_name, category_code, author_code, publisher_code)
 }

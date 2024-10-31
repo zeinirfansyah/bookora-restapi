@@ -123,38 +123,60 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
 }
 
 export const getBooks = async (req: Request, res: Response): Promise<void> => {
-    const { category } = req.query
+    const { book_name, category_code, author_code, publisher_code } = req.query
 
     try {
-        let bookCategoryId
+        if (category_code) {
+            const category = await getBookCategoryService({ category_code: category_code?.toString() })
 
-        if (category) {
-            const bookCategory = category as string
-            const categoryData = await getBookCategoryService({ category_name: bookCategory })
-
-
-            console.log(categoryData)
-
-            if (!categoryData) {
+            if (!category) {
                 res.status(400).json({
                     success: false,
                     status: 400,
-                    message: 'Book category not found.',
-                })
-                return
+                    message: `Category with code '${category_code}' does not exist.`,
+                });
+                return;
             }
-
-            bookCategoryId = categoryData.id
         }
 
-        const books = await getAllBooksService({ book_category_id: bookCategoryId })
+        if (publisher_code) {
+            const publisher = await getBookPublisherService({ publisher_code: publisher_code?.toString() })
 
-        if (!books || books.length === 0) {
-            res.status(400).json({
+            if (!publisher) {
+                res.status(400).json({
+                    success: false,
+                    status: 400,
+                    message: `Publisher with code '${publisher_code}' does not exist.`,
+                });
+                return;
+            }
+        }
+
+        if (author_code) {
+            const author = await getBookAuthorRepository({ author_code: author_code?.toString() })
+
+            if (!author) {
+                res.status(400).json({
+                    success: false,
+                    status: 400,
+                    message: `Author with code '${author_code}' does not exist.`,
+                });
+                return;
+            }
+        }
+
+        const books = await getAllBooksService(
+            book_name?.toString(),
+            category_code?.toString(),
+            author_code?.toString(),
+            publisher_code?.toString()
+        )
+
+        if (!books) {
+            res.status(404).send({
                 success: false,
-                status: 400,
+                status: 404,
                 message: 'Book not found.',
-                data: books
             })
             return
         }
@@ -163,6 +185,7 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
             success: true,
             status: 200,
             message: 'Book fetched successfully',
+            count: books.length,
             data: books
         })
     } catch (error) {

@@ -44,6 +44,8 @@ model BookCategory {
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
   book          Book[]
+
+  @@fulltext([category_name])
 }
 
 // -----------------------------  Book Author Model
@@ -54,6 +56,8 @@ model BookAuthor {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
   book        Book[]
+
+  @@fulltext([author_name])
 }
 
 // -----------------------------  Book Publisher Model
@@ -64,6 +68,8 @@ model BookPublisher {
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
   book           Book[]
+
+  @@fulltext([publisher_name])
 }
 
 // -----------------------------  Book Model
