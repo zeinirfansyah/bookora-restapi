@@ -130,9 +130,9 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
             const category = await getBookCategoryService({ category_code: category_code?.toString() })
 
             if (!category) {
-                res.status(400).json({
+                res.status(404).json({
                     success: false,
-                    status: 400,
+                    status: 404,
                     message: `Category with code '${category_code}' does not exist.`,
                 });
                 return;
@@ -143,9 +143,9 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
             const publisher = await getBookPublisherService({ publisher_code: publisher_code?.toString() })
 
             if (!publisher) {
-                res.status(400).json({
+                res.status(404).json({
                     success: false,
-                    status: 400,
+                    status: 404,
                     message: `Publisher with code '${publisher_code}' does not exist.`,
                 });
                 return;
@@ -156,9 +156,9 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
             const author = await getBookAuthorRepository({ author_code: author_code?.toString() })
 
             if (!author) {
-                res.status(400).json({
+                res.status(404).json({
                     success: false,
-                    status: 400,
+                    status: 404,
                     message: `Author with code '${author_code}' does not exist.`,
                 });
                 return;
@@ -172,20 +172,11 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
             publisher_code?.toString()
         )
 
-        if (!books) {
-            res.status(404).send({
-                success: false,
-                status: 404,
-                message: 'Book not found.',
-            })
-            return
-        }
-
         res.status(200).json({
             success: true,
             status: 200,
             message: 'Book fetched successfully',
-            count: books.length,
+            count: books?.length,
             data: books
         })
     } catch (error) {
