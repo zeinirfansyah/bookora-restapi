@@ -7,7 +7,7 @@ export default interface IUserType {
     password: string,
     confirm_password?: string | null,
     profile_image?: string | null,
-    role: 'CUSTOMER' | 'ADMIN',
+    role?: 'CUSTOMER' | 'ADMIN',
     created_at: Date,
     updated_at: Date
 }
