@@ -1,4 +1,5 @@
 export default interface IUserType {
+    id?: string,
     user_code: string,
     fullname: string,
     username: string,
