@@ -172,6 +172,16 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
             publisher_code?.toString()
         )
 
+        if (!books) {
+            res.status(400).json({
+                success: false,
+                status: 400,
+                message: 'User not found.',
+                data: books
+            })
+            return
+        }
+
         res.status(200).json({
             success: true,
             status: 200,

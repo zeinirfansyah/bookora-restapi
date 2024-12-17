@@ -1,7 +1,12 @@
-import { createUser, deleteUser, deleteUsers, getUser, getUsers, updateUser } from '../controllers/user.controller'
 import { Router } from 'express'
 import { validateUserInput } from '../middlewares/validators/user.validator'
 import { authorizeRole, verifyToken } from '../middlewares/auth'
+import { createUser } from '../controllers/user_controllers/create_user.controller'
+import { updateUser } from '../controllers/user_controllers/update_user.controller'
+import { getUser } from '../controllers/user_controllers/get_user.controller'
+import { getUsers } from '../controllers/user_controllers/get_users.controller'
+import { deleteUser } from '../controllers/user_controllers/delete_user.controller'
+import { deleteUsers } from '../controllers/user_controllers/delete_all_users.controller'
 
 const userRouter = Router()
 

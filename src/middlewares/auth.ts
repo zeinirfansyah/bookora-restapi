@@ -1,13 +1,10 @@
 import { Role } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express'
-import jwt, { JwtPayload } from 'jsonwebtoken'
-import { getUserService } from '../services/user.service';
+import jwt from 'jsonwebtoken'
+import { getUserService } from '../services/user_services/get_user.service';
+import IUserType from '../types/user.types';
 
-interface AuthenticatedRequest extends Request {
-    user?: string | JwtPayload;
-}
-
-export const verifyToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+export const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const authHeader = req.headers["authorization"] || "";
         const token = authHeader?.split(" ")[1];
@@ -20,7 +17,8 @@ export const verifyToken = async (req: AuthenticatedRequest, res: Response, next
             return;
         }
 
-        const user = jwt.verify(token, process.env.JWT_SECRET as string);
+        const user = jwt.verify(token, process.env.JWT_SECRET as string) as IUserType
+
         if (!user) {
             res.status(401).json({
                 message: "Must be logged in",
@@ -46,8 +44,8 @@ export const verifyToken = async (req: AuthenticatedRequest, res: Response, next
     }
 };
 
-export const authorizeRole = (requiredRole: string) => {
-    return async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+export const authorizeRole = (requiredRole: Role) => {
+    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const userPayload = req.user as {
                 user_code: string;
