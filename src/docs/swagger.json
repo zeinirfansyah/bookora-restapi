@@ -243,6 +243,13 @@
                                 "$ref": "#/components/schemas/UserRequest",
                                 "required": ["fullname", "username", "email", "password", "confirm_password"]
                             }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "$ref": "#/components/schemas/RegisterRequest",
+                                "required": ["fullname", "username", "email", "password", "confirm_password"]
+                            }
                         }
                     }
                 },
