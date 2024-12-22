@@ -1,7 +1,8 @@
 import { Router } from 'express'
-import { createBook, getBooks } from '../controllers/book.controller'
 import { validateBookInput } from '../middlewares/validators/book.validator'
 import { authorizeRole, verifyToken } from '../middlewares/auth'
+import { getBooks } from '../controllers/book_controllers/get_all_book.controller'
+import { createBook } from '../controllers/book_controllers/create_book.controller'
 
 const bookRoute = Router()
 

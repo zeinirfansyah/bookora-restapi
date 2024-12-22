@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../config/prisma";
-import IBookCategoryType from "../types/book_category.types";
+import { Prisma } from "@prisma/client"
+import IBookCategoryType from "../../types/book_category.types"
+import prisma from "../../config/prisma"
 
 export const getBookCategoryRepository = async (payload: Prisma.BookCategoryWhereUniqueInput): Promise<IBookCategoryType | null> => {
     const bookCategory = await prisma.bookCategory.findUnique({
@@ -9,4 +9,3 @@ export const getBookCategoryRepository = async (payload: Prisma.BookCategoryWher
 
     return bookCategory
 }
-
