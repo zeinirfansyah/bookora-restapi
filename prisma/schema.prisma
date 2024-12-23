@@ -50,12 +50,13 @@ model BookCategory {
 
 // -----------------------------  Book Author Model
 model BookAuthor {
-  id          String   @id @default(uuid())
-  author_code String   @unique
-  author_name String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  book        Book[]
+  id           String   @id @default(uuid())
+  author_code  String   @unique
+  author_name  String
+  author_photo String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  book         Book[]
 
   @@fulltext([author_name])
 }
@@ -65,6 +66,7 @@ model BookPublisher {
   id             String   @id @default(uuid())
   publisher_code String   @unique
   publisher_name String
+  publisher_logo String?
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
   book           Book[]
