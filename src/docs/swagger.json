@@ -19,6 +19,10 @@
         {
             "name": "User Management",
             "description": "Endpoints related to user management."
+        },
+        {
+            "name": "Author Management",
+            "description": "Endpoints related to book author management."
         }
     ],
     "paths": {
@@ -530,6 +534,162 @@
                     }
                 }
             }
+        },
+        "/api/book-author": {
+            "post": {
+                "summary": "Create book author.",
+                "description": "Create a book author. Requires ADMIN role.",
+                "tags": ["Author Management"],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "$ref": "#/components/schemas/AuthorRequest",
+                                "required": ["author_name"]
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "$ref": "#/components/schemas/AuthorRequest",
+                                "required": ["author_name"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Author created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Author created successfully."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/AuthorResponse"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Missing required fields: author_name"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 403
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Must be logged in."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 403
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You do not have the required role to access this resource."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal server error."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -623,6 +783,49 @@
                     "role": {
                         "type": "string",
                         "example": "CUSTOMER"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2024-11-04T22:49:07.820Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2024-11-04T22:49:07.820Z"
+                    }
+                }
+            },
+            "AuthorRequest": {
+                "type": "object",
+                "properties": {
+                    "author_name": {
+                        "type": "string",
+                        "example": "Zein Irfansyah"
+                    },
+                    "author_photo": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "The author photo file to upload."
+                    }
+                }
+            },
+            "AuthorResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "07527367-84b6-4213"
+                    },
+                    "author_code": {
+                        "type": "string",
+                        "example": "AUT_1734969698463"
+                    },
+                    "author_name": {
+                        "type": "string",
+                        "example": "Zein Irfansyah"
+                    },
+                    "author_photo": {
+                        "type": "string",
+                        "example": "/uploads/author_photos/thumbnail_1734969759228.png"
                     },
                     "created_at": {
                         "type": "string",
